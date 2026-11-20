@@ -17,13 +17,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v5
+      # Python 3.9 = KiCad's bundled Python; setup-python no longer ships it for new
+      # runners, uv still does. Activated venv -> plain `python`/`pip` below use it.
+      - uses: astral-sh/setup-uv@v6
         with:
-          python-version: "3.9"   # same as KiCad's bundled Python
+          python-version: "3.9"
+          activate-environment: true
 
       - name: Check tag matches package version
         if: startsWith(github.ref, 'refs/tags/v')
@@ -33,7 +36,7 @@ jobs:
 
       - name: Smoke test (imports, CLI)
         run: |
-          pip install -q -r plugins/requirements.txt jsonschema
+          uv pip install -q -r plugins/requirements.txt jsonschema
           LCSC2KICAD_HOME="$RUNNER_TEMP/lcsc" PYTHONPATH=plugins python -m lcsc2kicad --profiles
           python -m py_compile plugins/action.py plugins/lcsc2kicad/*.py
 
@@ -46,7 +49,7 @@ jobs:
       - name: Validate
         run: python tools/validate.py
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: pcm-package
           path: dist/
