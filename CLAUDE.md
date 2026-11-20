@@ -18,7 +18,7 @@ GitHub repo `TOOATK/lcsc2kicad`; no tests (CI does a smoke test + schema validat
 - `metadata.json` — PCM manifest. Its single `versions` entry must equal `__version__` in
   `plugins/lcsc2kicad/__init__.py` (build fails otherwise).
 - `tools/build_pcm.py` → `dist/` (package zip + `pages/` repository.json, packages.json,
-  resources.zip). `tools/validate.py` checks against KiCad's schemas. `tools/make_icons.py`
+  resources.zip). `tools/validate.py` checks against KiCad's schemas (vendored in `tools/schemas/`). `tools/make_icons.py`
   redraws icons. `.github/workflows/release.yml` publishes on tag `vX.Y.Z`.
 - `lcsc`, `LCSC2KiCad.command`, `setup.sh` — standalone launchers (`.venv`,
   `PYTHONPATH=plugins`).

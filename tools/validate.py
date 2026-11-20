@@ -1,28 +1,25 @@
 #!/usr/bin/env python3
 """Validate metadata.json, plugins/plugin.json and (if built) dist/pages/*.json against
-KiCad's published schemas. Needs `pip install jsonschema`.
-
-  python3 tools/validate.py [--schemas DIR]   # DIR with pcm.json/api.json, else download
+KiCad's schemas, vendored in tools/schemas/ (go.kicad.org refuses Python's user agent).
+Needs `pip install jsonschema`. Refresh the copies with:
+  curl -sSL -o tools/schemas/pcm.json https://go.kicad.org/pcm/schemas/v1
+  curl -sSL -o tools/schemas/api.json https://go.kicad.org/api/schemas/v1
 """
 from __future__ import annotations
 
 import argparse
 import json
 import sys
-import urllib.request
 from pathlib import Path
 
 import jsonschema
 
 ROOT = Path(__file__).resolve().parent.parent
-URLS = {"pcm": "https://go.kicad.org/pcm/schemas/v1", "api": "https://go.kicad.org/api/schemas/v1"}
+SCHEMAS = ROOT / "tools" / "schemas"
 
 
-def load_schema(name: str, d: str | None) -> dict:
-    if d:
-        return json.loads((Path(d) / f"{name}.json").read_text(encoding="utf-8"))
-    with urllib.request.urlopen(URLS[name], timeout=30) as r:
-        return json.loads(r.read().decode())
+def load_schema(name: str, d: str) -> dict:
+    return json.loads((Path(d) / f"{name}.json").read_text(encoding="utf-8"))
 
 
 def sub(schema: dict, definition: str) -> dict:
@@ -32,7 +29,7 @@ def sub(schema: dict, definition: str) -> dict:
 
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--schemas")
+    ap.add_argument("--schemas", default=str(SCHEMAS), help="folder with pcm.json/api.json")
     a = ap.parse_args(argv)
     pcm, api = load_schema("pcm", a.schemas), load_schema("api", a.schemas)
 
