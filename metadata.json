@@ -1,0 +1,34 @@
+{
+  "$schema": "https://go.kicad.org/pcm/schemas/v1",
+  "name": "LCSC to KiCad",
+  "description": "Import JLCPCB/LCSC parts (symbol, footprint, 3D) into your existing KiCad libraries.",
+  "description_full": "Paste LCSC part numbers (e.g. C2040) and lcsc2kicad fetches the symbol, footprint and 3D model from EasyEDA (via easyeda2kicad) and adds them to libraries you already have. It never creates libraries.\n\nFeatures:\n- Profiles: one per library set (symbol library + footprint library + 3D folder)\n- Symbol Footprint field set to <nickname>:<footprint>, plus an LCSC field\n- 3D models as .wrl (referenced) and .step, with a configurable path such as ${KIPRJMOD}/...\n- Existing parts are skipped unless Overwrite is ticked\n- The symbol library is backed up before every import\n\nRequires KiCad 9 or later with the IPC API enabled (Preferences > Plugins > Enable KiCad API). KiCad installs the Python dependency (easyeda2kicad) automatically.",
+  "identifier": "com.github.TOOATK.lcsc2kicad",
+  "type": "plugin",
+  "author": {
+    "name": "TOO",
+    "contact": {
+      "github": "https://github.com/TOOATK"
+    }
+  },
+  "maintainer": {
+    "name": "TOO",
+    "contact": {
+      "github": "https://github.com/TOOATK"
+    }
+  },
+  "license": "GPL-3.0",
+  "resources": {
+    "homepage": "https://github.com/TOOATK/lcsc2kicad",
+    "Issues": "https://github.com/TOOATK/lcsc2kicad/issues"
+  },
+  "tags": ["lcsc", "jlcpcb", "easyeda", "library", "import", "models-3d"],
+  "versions": [
+    {
+      "version": "1.0.0",
+      "status": "stable",
+      "kicad_version": "9.0",
+      "runtime": "ipc"
+    }
+  ]
+}

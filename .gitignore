@@ -1,0 +1,12 @@
+# personal data (lives in the per-user data folder since 1.0; old copies here are ignored)
+config.json
+config*.json.tmp
+backups/
+# build / env
+dist/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+# claude.ai skill source: contains personal paths, kept local only
+SKILL.md

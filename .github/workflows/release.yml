@@ -1,0 +1,68 @@
+name: build
+
+# Every push / PR: build the package and validate it against KiCad's schemas.
+# Tag vX.Y.Z: also attach the zip to a GitHub Release and publish the PCM repository
+# (repository.json, packages.json, resources.zip) to GitHub Pages (gh-pages branch).
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"   # same as KiCad's bundled Python
+
+      - name: Check tag matches package version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          v=$(python -c "import re;print(re.search(r'__version__\s*=\s*\"([^\"]+)\"',open('plugins/lcsc2kicad/__init__.py').read()).group(1))")
+          [ "v$v" = "${GITHUB_REF_NAME}" ] || { echo "tag ${GITHUB_REF_NAME} != __version__ $v"; exit 1; }
+
+      - name: Smoke test (imports, CLI)
+        run: |
+          pip install -q -r plugins/requirements.txt jsonschema
+          LCSC2KICAD_HOME="$RUNNER_TEMP/lcsc" PYTHONPATH=plugins python -m lcsc2kicad --profiles
+          python -m py_compile plugins/action.py plugins/lcsc2kicad/*.py
+
+      - name: Fetch published packages.json (older versions)
+        run: git show origin/gh-pages:packages.json > previous-packages.json 2>/dev/null || rm -f previous-packages.json
+
+      - name: Build
+        run: python tools/build_pcm.py --previous previous-packages.json
+
+      - name: Validate
+        run: python tools/validate.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pcm-package
+          path: dist/
+
+      - name: GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/*-pcm.zip \
+            --title "$GITHUB_REF_NAME" --generate-notes
+
+      - name: Publish PCM repository to GitHub Pages
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ github.token }}
+          publish_dir: dist/pages
+          keep_files: true

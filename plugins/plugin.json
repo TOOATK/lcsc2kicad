@@ -1,0 +1,22 @@
+{
+  "$schema": "https://go.kicad.org/api/schemas/v1",
+  "identifier": "com.github.TOOATK.lcsc2kicad",
+  "name": "LCSC to KiCad",
+  "description": "Import JLCPCB/LCSC parts (symbol, footprint, 3D model) into your existing KiCad libraries.",
+  "runtime": {
+    "type": "python",
+    "min_version": "3.9"
+  },
+  "actions": [
+    {
+      "identifier": "import-lcsc-parts",
+      "name": "Import LCSC parts",
+      "description": "Open the LCSC to KiCad importer",
+      "show-button": true,
+      "scopes": ["pcb", "schematic"],
+      "entrypoint": "action.py",
+      "icons-light": ["icons/icon-light-24.png", "icons/icon-light-48.png"],
+      "icons-dark": ["icons/icon-dark-24.png", "icons/icon-dark-48.png"]
+    }
+  ]
+}
