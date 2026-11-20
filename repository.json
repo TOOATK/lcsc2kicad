@@ -1,0 +1,22 @@
+{
+  "$schema": "https://go.kicad.org/pcm/schemas/v1#/definitions/Repository",
+  "name": "lcsc2kicad repository",
+  "maintainer": {
+    "name": "TOO",
+    "contact": {
+      "github": "https://github.com/TOOATK"
+    }
+  },
+  "packages": {
+    "url": "https://tooatk.github.io/lcsc2kicad/packages.json",
+    "sha256": "d1e690d2b633e94a4b22b6737624fef4c727fe8ccf72c8ed9a61cd78b8802a04",
+    "update_timestamp": 1795161707,
+    "update_time_utc": "2026-11-20 08:01:47"
+  },
+  "resources": {
+    "url": "https://tooatk.github.io/lcsc2kicad/resources.zip",
+    "sha256": "3c4823b8ea9a02e199b57352fc52a56da4796eabcbeb77e28b9c4ac2c5bfb155",
+    "update_timestamp": 1795161707,
+    "update_time_utc": "2026-11-20 08:01:47"
+  }
+}
